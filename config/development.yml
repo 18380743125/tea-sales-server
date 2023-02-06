@@ -1,0 +1,11 @@
+db:
+  mysql:
+    database: tea-sales
+    username: root
+    password: AI123456
+    sync: true
+
+app:
+  host: 127.0.0.1
+  port: 8000
+  log_on: true

@@ -1,0 +1,13 @@
+db:
+  mysql:
+    host: 127.0.0.1
+    port: 3306
+    database: tea-sales
+    username: root
+    password: AI123456
+    sync: false
+
+app:
+  host: t-bright.top
+  port: 8000
+  log_on: true
