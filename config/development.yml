@@ -1,6 +1,6 @@
 db:
   mysql:
-    database: tea-sales
+    database: tea_sales
     username: root
     password: AI123456
     sync: true

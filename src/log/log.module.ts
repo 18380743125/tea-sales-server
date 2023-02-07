@@ -5,7 +5,7 @@ import { WinstonModule, WinstonModuleOptions } from 'nest-winston';
 import * as DailyRotateFile from 'winston-daily-rotate-file';
 import { Console } from 'winston/lib/winston/transports';
 import { utilities } from 'nest-winston';
-import { AppConfig } from '../enum/config.enum';
+import { AppConfig } from '../common/enum/config.enum';
 
 /**
  * @description winston 日志集成
