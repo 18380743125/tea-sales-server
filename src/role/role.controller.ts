@@ -1,34 +1,44 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseFilters,
+} from '@nestjs/common';
 import { RoleService } from './role.service';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { RetUtils } from '../common/utils/ret.utils';
+import { TypeormFilter } from '../common/filters/typeorm.filter';
+import { ErrorEnum } from '../common/enum/error.enum';
 
 @Controller('role')
+@UseFilters(TypeormFilter)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Post()
-  create(@Body() createRoleDto: CreateRoleDto) {
-    return this.roleService.create(createRoleDto);
+  async create(@Body() dto: any) {
+    await this.roleService.create(dto);
+    return new RetUtils();
   }
 
   @Get()
-  findAll() {
-    return this.roleService.findAll();
+  async findAll() {
+    const result = await this.roleService.findAll();
+    return new RetUtils(200, 'ok', result);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+id, updateRoleDto);
+  async findOne(@Param('id') id: string) {
+    const result = await this.roleService.findOne(+id);
+    return new RetUtils(200, 'ok', result);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roleService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const result = await this.roleService.remove(+id);
+    const flag = result === ErrorEnum.NO_EXISTS;
+    return new RetUtils(200, flag ? ErrorEnum.NO_EXISTS : 'ok');
   }
 }

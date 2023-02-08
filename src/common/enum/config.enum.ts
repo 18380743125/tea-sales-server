@@ -12,4 +12,6 @@ export enum AppConfig {
   HOST = 'host',
   PORT = 'port',
   LOG_ON = 'log_on',
+  SESSION_SECRET = 'session_secret',
+  JWT_SECRET = 'jwt_secret',
 }

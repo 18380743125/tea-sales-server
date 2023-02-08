@@ -1,26 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import * as argon2 from 'argon2';
+import { User } from 'src/user/user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(private readonly jwtService: JwtService) {}
+  // 验证用户名密码是否正确
+  async validateUser(user: User, password: string) {
+    if (!user) return false;
+    return argon2.verify(user.password, password);
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async generateToken(user) {
+    return this.jwtService.signAsync({ id: user.id, name: user.name });
   }
 }

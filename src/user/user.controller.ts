@@ -1,34 +1,62 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseFilters,
+} from '@nestjs/common';
 import { UserService } from './user.service';
+import { TypeormFilter } from '../common/filters/typeorm.filter';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { QueryUserDto } from './dto/query-user.dto';
+import { Serialize } from '../common/decorators/serialize.decorator';
+import { User } from './user.entity';
+import { ErrorEnum } from '../common/enum/error.enum';
+import { RetUtils } from '../common/utils/ret.utils';
 
 @Controller('user')
+@UseFilters(TypeormFilter)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  // 用户注册
+  async create(@Body() dto: CreateUserDto) {
+    await this.userService.create(dto);
+    return new RetUtils();
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  // 多条件查询用户
+  async findAll(@Body() dto: QueryUserDto) {
+    const result = await this.userService.findAll(dto);
+    return new RetUtils(200, 'ok', result);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @Serialize(User)
+  // 根据 ID 查询用户
+  async findOne(@Param('id') id: string) {
+    const result = await this.userService.findOne(+id);
+    return new RetUtils(200, 'ok', result);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  // 更改用户信息
+  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
+    await this.userService.update(+id, dto);
+    return new RetUtils();
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  // 删除用户
+  async remove(@Param('id') id: string) {
+    const result = await this.userService.remove(+id);
+    const flag = result === ErrorEnum.NO_EXISTS;
+    return new RetUtils(200, flag ? ErrorEnum.NO_EXISTS : 'ok');
   }
 }

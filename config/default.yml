@@ -8,3 +8,5 @@ app:
   host: 127.0.0.1
   port: 8000
   log_on: true
+  session_secret: tl-bright
+  jwt_secret: bright
