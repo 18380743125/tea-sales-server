@@ -1,8 +1,9 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AppConfig } from '../common/enum/config.enum';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -10,7 +11,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get('app')[AppConfig.JWT_SECRET],
+      secretOrKey: fs.readFileSync(
+        path.join(__dirname, '../../config/keys/rsa_public_key.pem'),
+      ),
     });
   }
 

@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseFilters,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { TypeormFilter } from '../common/filters/typeorm.filter';
@@ -17,6 +19,10 @@ import { Serialize } from '../common/decorators/serialize.decorator';
 import { User } from './user.entity';
 import { ErrorEnum } from '../common/enum/error.enum';
 import { RetUtils } from '../common/utils/ret.utils';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtGuard } from '../common/guards/jwt.guard';
+import { AuthService } from '../auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Controller('user')
 @UseFilters(TypeormFilter)
@@ -38,9 +44,10 @@ export class UserController {
   }
 
   @Get(':id')
+  @UseGuards(JwtGuard)
   @Serialize(User)
   // 根据 ID 查询用户
-  async findOne(@Param('id') id: string) {
+  async findOne(@Req() req, @Param('id') id: string) {
     const result = await this.userService.findOne(+id);
     return new RetUtils(200, 'ok', result);
   }

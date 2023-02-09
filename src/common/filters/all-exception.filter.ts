@@ -26,15 +26,21 @@ export class AllExceptionFilter<T> implements ExceptionFilter {
     let body = {
       code,
       message: ErrorEnum.SERVER,
-      error: exception['name'],
+      error: exception['error'],
+      reason: exception['message'],
       ip: requestIp.getClientIp(req),
     };
     const response = exception['response'];
-
     switch (code) {
       case 400:
         body.message = ErrorEnum.PARAMS;
-        body.error = response['message'];
+        body.reason = response['message']
+        break;
+      case 401:
+        body.message = ErrorEnum.UNAUTHORIZED;
+        break;
+      case 403:
+        body.message = ErrorEnum.FORBIDDEN;
         break;
     }
 

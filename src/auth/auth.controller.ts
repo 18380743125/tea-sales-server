@@ -71,6 +71,6 @@ export class AuthController {
     }
     // 生成 TOKEN
     const token = await this.authService.generateToken(user);
-    res.status(200).json(new RetUtils(200, 'ok', { token }));
+    res.status(200).json(new RetUtils(200, 'ok', { ...token }));
   }
 }

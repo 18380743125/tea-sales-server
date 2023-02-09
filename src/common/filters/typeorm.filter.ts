@@ -22,7 +22,7 @@ export class TypeormFilter<T> implements ExceptionFilter {
       code,
       message,
       detail: ENV === 'development' ? exception['message'] : '',
-      error: ENV === 'development' ? 'sql error' : '服务器错误, 请稍后再试',
+      reason: ENV === 'development' ? 'sql error' : '服务器错误, 请稍后再试',
       ip: requestIp.getClientIp(req),
     };
     const logger = new Logger();

@@ -13,5 +13,6 @@ export enum AppConfig {
   PORT = 'port',
   LOG_ON = 'log_on',
   SESSION_SECRET = 'session_secret',
-  JWT_SECRET = 'jwt_secret',
+  TOKEN_EXPIRES = 'token_expires',
+  REFRESH_TOKEN_EXPIRES = 'refresh_token_expires'
 }
