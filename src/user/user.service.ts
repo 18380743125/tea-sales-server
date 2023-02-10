@@ -76,4 +76,13 @@ export class UserService {
     if (!user) return ErrorEnum.NO_EXISTS;
     return this.userRepository.remove(user);
   }
+
+  // 根据 name 验证是否为管理员
+  async validateAdmin(name: string) {
+    const user = await this.findOneByName(name);
+    if (!user) {
+      return false;
+    }
+    return !!user.roles.filter((item) => item.name === '管理员').length;
+  }
 }
