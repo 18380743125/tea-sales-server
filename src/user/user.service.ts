@@ -33,8 +33,13 @@ export class UserService {
       where: { name: In(dto.roles as string[]) },
     });
     // 对密码 hash
-    dto.password = await argon2.hash(dto.password);
+    dto.password = await this.handlePwdHash(dto.password);
     return this.userRepository.save(dto as any);
+  }
+
+  // 对密码进行 hash
+  async handlePwdHash(password: string) {
+    return argon2.hash(password)
   }
 
   // 多条件查询用户
@@ -66,7 +71,7 @@ export class UserService {
 
   // 更改用户信息
   async update(id: number, dto: UpdateUserDto) {
-    this.userRepository.update(id, dto as User);
+    await this.userRepository.update(id, dto as User);
     return null;
   }
 

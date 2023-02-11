@@ -74,12 +74,12 @@ export class AuthController {
       return;
     }
 
-    if(dto.flag === ConstantEnum.ADMIN_FLAG) {
+    if (dto.flag === ConstantEnum.ADMIN_FLAG) {
       // 校验是否是管理员
-      const flag = await this.userService.validateAdmin(dto.name)
-      if(!flag) {
+      const flag = await this.userService.validateAdmin(dto.name);
+      if (!flag) {
         res.status(200).json(new RetUtils(200, ErrorEnum.NO_ADMIN_AUTH));
-        return
+        return;
       }
     }
 
@@ -104,9 +104,16 @@ export class AuthController {
         },
       );
     } else {
-      res.clearCookie('user')
+      res.clearCookie('user');
     }
     delete user.password;
     res.status(200).json(new RetUtils(200, 'ok', { ...token, user }));
+  }
+
+  // 注销登录
+  @Post('/logout')
+  logout(@Session() session) {
+    session.destroy();
+    return new RetUtils();
   }
 }
