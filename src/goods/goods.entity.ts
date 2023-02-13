@@ -17,7 +17,8 @@ import { Evaluate } from '../evaluate/evaluate.entity';
 import { GoodsImg } from './goods-img.entity';
 import { Order } from '../order/order.entity';
 import { Logistic } from '../logistics/logistic.entity';
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
+import { ColumnNumericOptions } from 'typeorm/decorator/options/ColumnNumericOptions';
 
 @Entity()
 export class Goods {
@@ -29,7 +30,11 @@ export class Goods {
   @Expose()
   name: string;
 
-  @Column({ type: 'decimal', comment: '价格' })
+  @Column('decimal', {
+    precision: 8,
+    scale: 2,
+    unsigned: true,
+  } as ColumnNumericOptions)
   @Expose()
   price: number;
 

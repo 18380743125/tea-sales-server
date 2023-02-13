@@ -8,6 +8,9 @@ export enum ErrorEnum {
   LOGIN_ERROR = 'name_or_password_error', // 用户名或密码错误
   UNAUTHORIZED = 'unauthorized', // 未授权
   FORBIDDEN = 'forbidden', // 禁止访问
+  LOGIN_EXPIRES = 'login_expires', // 登录过期
   NO_ADMIN_AUTH = 'no_admin_auth', // 无管理员权限
   PASSWORD_ERROR = 'password_error', // 密码错误
+  FILE_TO_LARGE = 'file_to_large', // 文件太大
+  FILE_FORMAT_ERROR = 'file_format_error', // 文件格式错误
 }

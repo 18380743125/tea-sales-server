@@ -39,15 +39,19 @@ export class UserService {
 
   // 对密码进行 hash
   async handlePwdHash(password: string) {
-    return argon2.hash(password)
+    return argon2.hash(password);
   }
 
   // 多条件查询用户
   async findAll(dto: QueryUserDto) {
-    const { page, size, ...conditionObj } = dto;
-    console.log(dto);
+    let { page = 1, size = 10, ...conditionObj } = dto;
+    typeof page === 'string' && (page = parseInt(page));
     const qb = this.userRepository.createQueryBuilder('user');
+    qb.leftJoinAndSelect('user.roles', 'roles');
+    const name = conditionObj.name;
+    delete conditionObj.name;
     andConditionUtils(qb, conditionObj);
+    qb.andWhere('user.name LIKE :name', { name: `%${name ?? ''}%` });
     qb.orderBy('user.createAt', 'DESC');
     qb.skip((page - 1) * size).take(size);
     return qb.getManyAndCount();

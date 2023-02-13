@@ -1,6 +1,6 @@
 import {
   ExecutionContext,
-  ForbiddenException, Inject,
+  ForbiddenException, HttpException, Inject,
   Injectable,
   LoggerService,
   UnauthorizedException
@@ -8,6 +8,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '../../auth/auth.service';
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { ConstantEnum } from "../enum/constant.enum";
 
 @Injectable()
 export class JwtGuard extends AuthGuard('jwt') {
@@ -30,7 +31,7 @@ export class JwtGuard extends AuthGuard('jwt') {
 
     // 验证 refresh_token 是否有效
     user = this.authService.verifyToken(refreshToken);
-    if (!user) throw new ForbiddenException('当前登录已过期, 请重新登录');
+    if (!user) throw new HttpException({ message: '当前登录已过期, 请重新登录' }, ConstantEnum.LOGIN_EXPIRES_STATUS );
 
     // 换 token 日志
     this.logger.log(JwtGuard.name, `${user.name}'使用 refreshToken 更换了 token`);

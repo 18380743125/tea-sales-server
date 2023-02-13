@@ -9,6 +9,7 @@ import {
 
 import * as requestIp from 'request-ip';
 import { ErrorEnum } from '../enum/error.enum';
+import { ConstantEnum } from '../enum/constant.enum';
 
 @Catch()
 export class AllExceptionFilter<T> implements ExceptionFilter {
@@ -34,7 +35,7 @@ export class AllExceptionFilter<T> implements ExceptionFilter {
     switch (code) {
       case 400:
         body.message = ErrorEnum.PARAMS;
-        body.reason = response['message']
+        body.reason = response['message'];
         break;
       case 401:
         body.message = ErrorEnum.UNAUTHORIZED;
@@ -42,6 +43,14 @@ export class AllExceptionFilter<T> implements ExceptionFilter {
       case 403:
         body.message = ErrorEnum.FORBIDDEN;
         break;
+      case 413:
+        body.message = ErrorEnum.FILE_TO_LARGE;
+        break;
+      case 415:
+        body.message = ErrorEnum.FILE_FORMAT_ERROR;
+        break;
+      case ConstantEnum.LOGIN_EXPIRES_STATUS:
+        body.message = ErrorEnum.LOGIN_EXPIRES;
     }
 
     this.logger.error(AllExceptionFilter.name, body);

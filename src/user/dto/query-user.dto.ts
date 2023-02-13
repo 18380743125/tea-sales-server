@@ -1,14 +1,15 @@
-import { Optional } from '@nestjs/common';
-import { IsInt, IsNotEmpty } from 'class-validator';
-import { PartialType } from '@nestjs/mapped-types';
-import { UpdateUserDto } from './update-user.dto';
+import { IsNotEmpty, IsOptional } from "class-validator";
 
-export class QueryUserDto extends PartialType(UpdateUserDto) {
-  @IsNotEmpty({ message: '页码不能为空' })
-  @IsInt({ message: '页码必须是一个整数' })
+export class QueryUserDto {
+  @IsNotEmpty()
   page: number;
 
-  @Optional()
-  @IsInt({ message: '页码必须是一个整数' })
-  size?: number = 10;
+  @IsOptional()
+  name?: string
+
+  @IsOptional()
+  phone?: string
+
+  @IsOptional()
+  size?: number;
 }

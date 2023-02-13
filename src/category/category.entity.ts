@@ -15,7 +15,7 @@ export class Category {
   @Expose()
   id: number;
 
-  @Column({ length: 20, comment: '类别名称' })
+  @Column({ unique: true, length: 20, comment: '类别名称' })
   @Expose()
   name: string;
 

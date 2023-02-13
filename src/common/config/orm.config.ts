@@ -26,8 +26,8 @@ function buildConnectionOptions() {
     // synchronize: mysqlConfig[MySQLConfig.SYNC],
     synchronize: false,
     entities: entitiesDir,
-    logging: logFlag && isDevelopment,
-    // logging: ['error'],
+    // logging: logFlag && isDevelopment,
+    logging: ['error'],
     retryDelay: 30000,
   } as TypeOrmModuleOptions;
 }

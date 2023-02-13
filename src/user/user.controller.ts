@@ -3,13 +3,16 @@ import {
   Controller,
   Delete,
   Get,
-  Param, ParseIntPipe,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
   Req,
   UseFilters,
-  UseGuards
-} from "@nestjs/common";
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { TypeormFilter } from '../common/filters/typeorm.filter';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,6 +25,7 @@ import { RetUtils } from '../common/utils/ret.utils';
 import { JwtGuard } from '../common/guards/jwt.guard';
 import { AuthService } from '../auth/auth.service';
 import { UpdatePwdDto } from './dto/update-pwd.dto';
+import { ClassTransformer } from 'class-transformer';
 
 @Controller('user')
 @UseFilters(TypeormFilter)
@@ -39,8 +43,9 @@ export class UserController {
   }
 
   @Get()
+  @Serialize(User)
   // 多条件查询用户
-  async findAll(@Body() dto: QueryUserDto) {
+  async findAll(@Query() dto: QueryUserDto) {
     const result = await this.userService.findAll(dto);
     return new RetUtils(200, 'ok', result);
   }
@@ -88,5 +93,14 @@ export class UserController {
     const newPwd = await this.userService.handlePwdHash(dto.password);
     await this.userService.update(user.id, { password: newPwd });
     return new RetUtils();
+  }
+
+  // 禁用/解封用户
+  @Post('banned')
+  async banned(@Query('id', ParseIntPipe) id, @Query('banned') banned) {
+    const user = await this.userService.findOne(id)
+    if(!user) return new RetUtils(200, ErrorEnum.NO_EXISTS)
+    await this.userService.update(id, { banned })
+    return new RetUtils()
   }
 }
