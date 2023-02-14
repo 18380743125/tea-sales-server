@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session';
 import * as cookieParser from 'cookie-parser';
@@ -31,6 +32,10 @@ export default function (app) {
     });
   });
 
+  // 访问静态资源
+  console.log(__dirname, '/images');
+  app.useStaticAssets(path.join(__dirname, 'images'));
+
   // 数据库链接对象
   const conn = mysql.createPool({
     host: mysqlConfig[MySQLConfig.HOST],
@@ -63,5 +68,5 @@ export default function (app) {
   );
 
   // 配置 cookie 中间件
-  app.use(cookieParser(appConfig[AppConfig.SESSION_SECRET]))
+  app.use(cookieParser(appConfig[AppConfig.SESSION_SECRET]));
 }

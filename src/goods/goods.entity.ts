@@ -54,6 +54,13 @@ export class Goods {
   @Expose()
   description: string;
 
+  @Column({
+    length: 1,
+    default: '1',
+    comment: '商品状态, 1 上架状态, 0 下架状态',
+  })
+  state: string;
+
   // 关联折扣表
   @OneToOne(() => Discount, (discount) => discount.goods)
   @Expose()

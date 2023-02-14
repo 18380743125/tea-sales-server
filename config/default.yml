@@ -11,4 +11,4 @@ app:
   session_secret: tl-bright
   jwt_secret: bright
   token_expires: 1d
-  refresh_token_expires: 2d
+  refresh_token_expires: 3d

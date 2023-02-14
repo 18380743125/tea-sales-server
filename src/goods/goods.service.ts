@@ -31,6 +31,7 @@ export class GoodsService {
       image.mimetype = file.mimetype;
       image.size = file.size;
       imgs.push(image);
+
       // 保存图片
       await copyFile(file.path, imgDir + file.filename);
       // 删除临时图片
@@ -49,13 +50,14 @@ export class GoodsService {
     for (let key of Object.keys(dto)) {
       goods[key] = dto[key];
     }
+    await createDir(imgDir);
     // 装载图片对象
-    createDir(imgDir);
     goods.imgs = await this.generateGoodsImg(files);
     goods.category = category;
     return this.goodsRepository.save(goods);
   }
 
+  // 更改商品信息
   async update(
     id: number,
     dto: UpdateGoodDto,
@@ -84,13 +86,13 @@ export class GoodsService {
   async findAll(dto: QueryGoodsDto) {
     const { page, size = 10, name, category } = dto;
     const qb = this.goodsRepository.createQueryBuilder('goods');
-    qb.innerJoinAndSelect('goods.imgs', 'imgs');
+    qb.leftJoinAndSelect('goods.imgs', 'imgs');
     qb.leftJoinAndSelect('goods.category', 'category');
     category && qb.andWhere('goods.category = :category', { category });
     name && qb.andWhere('goods.name LIKE :name', { name: `%${name}%` });
     return qb
       .orderBy('goods.createAt', 'DESC')
-      .offset((page - 1) * size)
+      .skip((page - 1) * size)
       .take(size)
       .getManyAndCount();
   }
@@ -99,7 +101,7 @@ export class GoodsService {
   findOne(id: number) {
     return this.goodsRepository.findOne({
       where: { id },
-      relations: { imgs: true, evaluate: true },
+      relations: { imgs: true, evaluate: true, category: true },
     });
   }
 

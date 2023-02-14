@@ -6,9 +6,17 @@ import * as fs from 'fs';
  * @param destPath 拷贝到目的地路径
  */
 export async function copyFile(path: string, destPath: string) {
-  const rs = fs.createReadStream(path);
-  const ws = fs.createWriteStream(destPath);
-  rs.pipe(ws);
+  return new Promise((resolve, reject) => {
+    const rs = fs.createReadStream(path);
+    const ws = fs.createWriteStream(destPath);
+    rs.pipe(ws);
+    rs.on('end', () => {
+      resolve('copy_ok')
+    })
+    rs.on('error', () => {
+      reject('copy_error')
+    })
+  })
 }
 
 /**

@@ -30,7 +30,7 @@ export class AuthService {
       { expiresIn: appConfig[AppConfig.REFRESH_TOKEN_EXPIRES] },
     );
     return {
-      accessToken,
+      accessToken: 'Bearer ' + accessToken,
       refreshToken,
     };
   }

@@ -45,12 +45,12 @@ function createDailyRotateTransport(level: string, filename: string) {
         return {
           transports: [
             consoleTransport,
-            ...(appConfig[AppConfig.LOG_ON]
-              ? [
-                  createDailyRotateTransport('info', 'info'),
-                  createDailyRotateTransport('warn', 'error'),
-                ]
-              : []),
+            // ...(appConfig[AppConfig.LOG_ON]
+            //   ? [
+            //       createDailyRotateTransport('info', 'info'),
+            //       createDailyRotateTransport('warn', 'error'),
+            //     ]
+            //   : []),
           ],
         } as WinstonModuleOptions;
       },

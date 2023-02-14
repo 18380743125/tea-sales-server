@@ -60,7 +60,6 @@ export class GoodsController {
   ) {
     const oldGoods = await this.goodsService.findOne(+id);
     if (!oldGoods) return new RetUtils(200, ErrorEnum.NO_EXISTS);
-
     dto.price = toNumber(dto.price);
     dto.stock = toNumber(dto.stock);
     let category = await this.categoryService.findByName(dto.category);
