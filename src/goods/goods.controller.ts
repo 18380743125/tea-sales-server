@@ -10,6 +10,7 @@ import {
   UploadedFiles,
   UseGuards,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { GoodsService } from './goods.service';
 import { CreateGoodDto } from './dto/create-good.dto';
@@ -101,5 +102,12 @@ export class GoodsController {
     if (!img) return new RetUtils(200, ErrorEnum.NO_EXISTS);
     await this.goodsService.removeImg(img);
     return new RetUtils();
+  }
+
+  @Get('img/:id')
+  // 根据商品 id 查询图片
+  async findAllImg(@Param('id', ParseIntPipe) id) {
+    const img = await this.goodsService.findAllImg(id);
+    return new RetUtils(200, 'ok', img);
   }
 }

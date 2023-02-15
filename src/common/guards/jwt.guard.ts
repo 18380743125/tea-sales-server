@@ -27,6 +27,7 @@ export class JwtGuard extends AuthGuard('jwt') {
     res.set('Access-Control-Expose-Headers', '');
     const accessToken = req.get('authorization');
     const refreshToken = req.get('refreshtoken');
+
     if (!accessToken) throw new UnauthorizedException('用户未登录');
     // 验证 access_token 是否有效
     let user = this.authService.verifyToken(accessToken);

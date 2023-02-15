@@ -123,4 +123,9 @@ export class GoodsService {
     await removeFile(imgDir + img.filename);
     await this.goodsImgRepository.remove(img);
   }
+
+  // 根据商品 ID 查询图片
+  async findAllImg(id) {
+    return this.goodsImgRepository.find({ where: { goods: { id } } });
+  }
 }

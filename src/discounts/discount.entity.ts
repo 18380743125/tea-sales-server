@@ -1,12 +1,14 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Goods } from '../goods/goods.entity';
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
 
 @Entity()
 export class Discount {
@@ -23,8 +25,19 @@ export class Discount {
   description: string;
 
   // 关联商品表
-  @OneToOne(() => Goods, (goods) => goods.discount)
+  @OneToOne(() => Goods, (goods) => goods.discount, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   @Expose()
   goods: Goods;
+
+  @CreateDateColumn({ comment: '创建时间' })
+  @Expose()
+  createAt: Date;
+
+  @UpdateDateColumn({ comment: '更新时间' })
+  @Expose()
+  updateAt: Date;
 }

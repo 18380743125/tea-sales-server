@@ -9,7 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Goods } from './goods.entity';
 import { Category } from '../category/category.entity';
 import { CategoryModule } from '../category/category.module';
-import { GoodsImg } from "./goods-img.entity";
+import { GoodsImg } from './goods-img.entity';
 
 @Module({
   imports: [
@@ -27,5 +27,6 @@ import { GoodsImg } from "./goods-img.entity";
   ],
   controllers: [GoodsController],
   providers: [GoodsService],
+  exports: [GoodsService],
 })
 export class GoodsModule {}
