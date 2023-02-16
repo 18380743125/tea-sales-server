@@ -21,7 +21,7 @@ import { CategoryService } from '../category/category.service';
 import { RetUtils } from '../common/utils/ret.utils';
 import { ErrorEnum } from '../common/enum/error.enum';
 import { QueryGoodsDto } from './dto/query-goods.dto';
-import { goodsFilesInterceptor } from './multer.config';
+import { goodsFilesInterceptor } from '../common/config/multer.config';
 import { toNumber } from '../common/utils/format';
 
 @Controller('goods')

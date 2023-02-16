@@ -17,10 +17,6 @@ export class Cart {
   @Expose()
   id: number;
 
-  @Column({ comment: '单价' })
-  @Expose()
-  price: number;
-
   @Column({ comment: '数量' })
   @Expose()
   count: number;
@@ -34,8 +30,8 @@ export class Cart {
   user: User;
 
   // 关联商品表
-  @ManyToMany(() => Goods, (goods) => goods.carts)
-  @JoinTable({ name: 'carts_goods' })
+  @ManyToOne(() => Goods, (goods) => goods.carts)
+  @JoinColumn()
   @Expose()
-  goods: Goods[];
+  goods: Goods;
 }

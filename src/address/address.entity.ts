@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
+import { Order } from '../order/order.entity';
 
 @Entity()
 export class Address {
@@ -27,6 +29,10 @@ export class Address {
   @Column({ length: 1, default: '0', comment: '默认地址' })
   @Expose()
   default: string;
+
+  @OneToMany(() => Order, (order) => order.address)
+  @Expose()
+  orders: Order[];
 
   // 关联用户表
   @ManyToOne(() => User, (user) => user.addresses, {

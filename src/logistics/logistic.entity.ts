@@ -27,7 +27,7 @@ export class Logistic {
   @Expose()
   state: string;
 
-  @Column({ type: 'timestamp', nullable: true, comment: '确认收货时间' })
+  @Column({ type: 'timestamp', nullable: true, comment: '送达时间' })
   @Expose()
   endTime: Date;
 
@@ -46,14 +46,6 @@ export class Logistic {
   @JoinColumn()
   @Expose()
   user: User;
-
-  // 关联商品表
-  @ManyToOne(() => Goods, (goods) => goods.logistic, {
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn()
-  @Expose()
-  goods: Goods;
 
   @CreateDateColumn({ comment: '创建时间' })
   @Expose()

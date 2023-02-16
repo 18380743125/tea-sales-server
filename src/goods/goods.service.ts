@@ -91,7 +91,7 @@ export class GoodsService {
     category && qb.andWhere('goods.category = :category', { category });
     name && qb.andWhere('goods.name LIKE :name', { name: `%${name}%` });
     return qb
-      .orderBy('goods.createAt', 'DESC')
+      .orderBy('goods.createAt', 'ASC')
       .skip((page - 1) * size)
       .take(size)
       .getManyAndCount();

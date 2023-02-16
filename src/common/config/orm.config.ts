@@ -23,12 +23,12 @@ function buildConnectionOptions() {
     username: mysqlConfig[MySQLConfig.USERNAME],
     password: mysqlConfig[MySQLConfig.PASSWORD],
     database: mysqlConfig[MySQLConfig.DATABASE],
-    synchronize: mysqlConfig[MySQLConfig.SYNC],
-    // synchronize: false,
+    // synchronize: mysqlConfig[MySQLConfig.SYNC],
+    synchronize: false,
     entities: entitiesDir,
-    // logging: logFlag && isDevelopment,
-    logging: ['error'],
-    retryDelay: 30000,
+    logging: logFlag && isDevelopment,
+    // logging: ['error'],
+    retryDelay: 30000
   } as TypeOrmModuleOptions;
 }
 

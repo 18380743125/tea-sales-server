@@ -80,10 +80,6 @@ export class Goods {
   @Expose()
   evaluate: Evaluate[];
 
-  @OneToMany(() => Logistic, (logistic) => logistic.goods)
-  @Expose()
-  logistic: Logistic[];
-
   // 关联类别表
   @ManyToOne(() => Category, (category) => category.goods, {
     onDelete: 'SET NULL',

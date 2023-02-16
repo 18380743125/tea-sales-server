@@ -13,4 +13,6 @@ export enum ErrorEnum {
   PASSWORD_ERROR = 'password_error', // 密码错误
   FILE_TO_LARGE = 'file_to_large', // 文件太大
   FILE_FORMAT_ERROR = 'file_format_error', // 文件格式错误
+  UNDER_STOCK = 'under_stock', // 库存不足
+  ADDRESS_NO_EXISTS = 'address_no_exists', //地址不存在
 }

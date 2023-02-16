@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
@@ -10,12 +11,16 @@ import { ErrorEnum } from '../common/enum/error.enum';
 import { Role } from '../role/role.entity';
 import { User } from './user.entity';
 import { andConditionUtils } from '../common/utils/db.helper';
+import { Avatar } from './avatar.entity';
+import { removeFile } from '../common/utils/fs.utils';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Avatar)
+    private readonly avatarRepository: Repository<Avatar>,
   ) {}
 
   // 用户注册
@@ -48,6 +53,7 @@ export class UserService {
     typeof page === 'string' && (page = parseInt(page));
     const qb = this.userRepository.createQueryBuilder('user');
     qb.leftJoinAndSelect('user.roles', 'roles');
+    qb.leftJoinAndSelect('user.avatar', 'avatar');
     const name = conditionObj.name;
     delete conditionObj.name;
     andConditionUtils(qb, conditionObj);
@@ -61,7 +67,7 @@ export class UserService {
   findOne(id: number) {
     return this.userRepository.findOne({
       where: { id },
-      relations: { roles: true },
+      relations: { roles: true, avatar: true },
     });
   }
 
@@ -69,7 +75,7 @@ export class UserService {
   findOneByName(name: string) {
     return this.userRepository.findOne({
       where: { name },
-      relations: { roles: true },
+      relations: { roles: true, avatar: true },
     });
   }
 
@@ -93,5 +99,17 @@ export class UserService {
       return false;
     }
     return !!user.roles.filter((item) => item.name === '管理员').length;
+  }
+
+  // 更换头像
+  async updateAvatar(id: number, avatar: Avatar, filename: string) {
+    await this.avatarRepository.update(id, avatar);
+    // 删除之前的头像图片
+    await removeFile(path.join(__dirname, '../images/avatar', filename));
+  }
+
+  // 创建头像
+  async createAvatar(avatar: Avatar) {
+    return this.avatarRepository.save(avatar);
   }
 }

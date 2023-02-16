@@ -8,10 +8,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ColumnNumericOptions } from 'typeorm/decorator/options/ColumnNumericOptions';
 import { User } from '../user/user.entity';
 import { Goods } from '../goods/goods.entity';
 import { Logistic } from '../logistics/logistic.entity';
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
+import { Address } from '../address/address.entity';
 
 @Entity()
 export class Order {
@@ -19,9 +21,13 @@ export class Order {
   @Expose()
   id: number;
 
-  @Column({ type: 'decimal', comment: '价格' })
+  @Column('decimal', {
+    precision: 8,
+    scale: 2,
+    unsigned: true,
+  } as ColumnNumericOptions)
   @Expose()
-  price: number;
+  money: number;
 
   @Column({ comment: '数量' })
   @Expose()
@@ -30,10 +36,6 @@ export class Order {
   @Column({ length: 1, default: '0', comment: '状态' })
   @Expose()
   state: string;
-
-  @Column({ length: 60, nullable: true, comment: '退货原因' })
-  @Expose()
-  reason: string;
 
   @Column({ type: 'timestamp', nullable: true, comment: '订单结束时间' })
   @Expose()
@@ -51,13 +53,23 @@ export class Order {
   @Expose()
   user: User;
 
-  // 关联订单表
+  // 关联送货地址表
+  @ManyToOne(() => Address, (address) => address.orders)
+  @JoinColumn()
+  @Expose()
+  address: Address;
+
+  // 关联商品表
   @ManyToOne(() => Goods, (goods) => goods.orders, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
   @Expose()
   goods: Goods;
+
+  @Column({ length: 1, default: '0', comment: '是否可见' })
+  @Expose()
+  invisible: string;
 
   @CreateDateColumn({ comment: '创建时间' })
   @Expose()

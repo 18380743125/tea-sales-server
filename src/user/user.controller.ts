@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   Req,
+  UploadedFile,
   UseFilters,
   UseGuards,
   UseInterceptors,
@@ -25,7 +26,10 @@ import { RetUtils } from '../common/utils/ret.utils';
 import { JwtGuard } from '../common/guards/jwt.guard';
 import { AuthService } from '../auth/auth.service';
 import { UpdatePwdDto } from './dto/update-pwd.dto';
-import { ClassTransformer } from 'class-transformer';
+import { AdminGuard } from '../common/guards/admin.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { avatarFileInterceptor } from '../common/config/multer.config';
+import { Avatar } from './avatar.entity';
 
 @Controller('user')
 @UseFilters(TypeormFilter)
@@ -74,7 +78,10 @@ export class UserController {
 
   @Delete(':id')
   // 删除用户
-  async remove(@Param('id') id: string) {
+  @UseGuards(JwtGuard)
+  async remove(@Req() req, @Param('id') id: string) {
+    // 非法操作
+    if (req.user.userId !== id) return new RetUtils(200, ErrorEnum.FORBIDDEN);
     const result = await this.userService.remove(+id);
     const flag = result === ErrorEnum.NO_EXISTS;
     return new RetUtils(200, flag ? ErrorEnum.NO_EXISTS : 'ok');
@@ -97,10 +104,38 @@ export class UserController {
 
   // 禁用/解封用户
   @Post('banned')
+  @UseGuards(JwtGuard, AdminGuard)
   async banned(@Query('id', ParseIntPipe) id, @Query('banned') banned) {
-    const user = await this.userService.findOne(id)
-    if(!user) return new RetUtils(200, ErrorEnum.NO_EXISTS)
-    await this.userService.update(id, { banned })
-    return new RetUtils()
+    const user = await this.userService.findOne(id);
+    if (!user) return new RetUtils(200, ErrorEnum.NO_EXISTS);
+    await this.userService.update(id, { banned });
+    return new RetUtils();
+  }
+
+  // 用户上传头像（含更换头像）
+  @Post('/avatar')
+  @UseGuards(JwtGuard)
+  @UseInterceptors(avatarFileInterceptor)
+  async uploadAvatar(@Req() req, @UploadedFile() file: Express.Multer.File) {
+    const user = await this.userService.findOne(req.user.userId);
+    const avatar = new Avatar();
+    avatar.filename = file.filename;
+    avatar.mimetype = file.mimetype;
+    avatar.size = file.size;
+
+    if (user.avatar) {
+      // 更换头像
+      this.userService.updateAvatar(
+        user.avatar.id,
+        avatar,
+        user.avatar.filename,
+      );
+      return new RetUtils();
+    }
+
+    // 第一次上传头像
+    avatar.user = user;
+    await this.userService.createAvatar(avatar);
+    return new RetUtils();
   }
 }
