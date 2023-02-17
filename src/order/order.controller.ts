@@ -23,6 +23,7 @@ import { AddressService } from '../address/address.service';
 import { UserService } from '../user/user.service';
 import { Serialize } from '../common/decorators/serialize.decorator';
 import { AdminGuard } from '../common/guards/admin.guard';
+import { QueryOrderDto } from './dto/query-order.dto';
 
 @Controller('order')
 export class OrderController {
@@ -71,10 +72,12 @@ export class OrderController {
   }
 
   @Get()
-  @UseGuards(JwtGuard, AdminGuard)
+  @UseGuards(JwtGuard)
+  @Serialize(Order)
   // 多条件查询订单信息, 订单状态、商品名称、用户名、手机号 查询
-  findAll() {
-    return this.orderService.findAll();
+  async findAll(@Query() dto: QueryOrderDto) {
+    const orders = await this.orderService.findAll(dto);
+    return new RetUtils(200, 'ok', orders);
   }
 
   @Get(':id')

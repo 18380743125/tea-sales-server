@@ -1,8 +1,14 @@
-import { IsNotEmpty, IsNumberString, IsString } from "class-validator";
+import {
+  IsNotEmpty,
+  IsNumberString,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateGoodDto {
   @IsNotEmpty({ message: '商品名称不能为空~' })
   @IsString({ message: '商品名称必须是字符串~' })
+  @MaxLength(30, { message: '商品名称不能超过30个字符~' })
   name: string;
 
   @IsNotEmpty({ message: '商品价格不能为空~' })
@@ -10,11 +16,11 @@ export class CreateGoodDto {
   price: number;
 
   @IsNotEmpty({ message: '商品库存不能为空~' })
-  @IsNumberString(null,{ message: '商品库存必须是整数~' })
+  @IsNumberString(null, { message: '商品库存必须是整数~' })
   stock: number;
 
   @IsNotEmpty({ message: '商品重量参数不能为空~' })
-  @IsString({ message: '商品重量必须是字符串~'})
+  @IsString({ message: '商品重量必须是字符串~' })
   weight: string;
 
   @IsNotEmpty({ message: '商品描述不能为空~' })

@@ -9,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Goods } from '../goods/goods.entity';
 import { Order } from '../order/order.entity';
 import { Expose } from "class-transformer";
 
@@ -23,11 +22,11 @@ export class Logistic {
   @Expose()
   way: string;
 
-  @Column({ length: 1, comment: '运输状态' })
+  @Column({ length: 20, default: '运输中', comment: '运输状态' })
   @Expose()
   state: string;
 
-  @Column({ type: 'timestamp', nullable: true, comment: '送达时间' })
+  @Column({ type: 'timestamp', nullable: true, comment: '签收时间' })
   @Expose()
   endTime: Date;
 

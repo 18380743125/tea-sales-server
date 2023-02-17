@@ -3,6 +3,8 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { QueryOrderDto } from './dto/query-order.dto';
+import { andConditionUtils } from '../common/utils/db.helper';
 
 @Injectable()
 export class OrderService {
@@ -15,8 +17,28 @@ export class OrderService {
     return this.orderRepository.save(orders);
   }
 
-  findAll() {
-    return `This action returns all order`;
+  async findAll(dto: QueryOrderDto) {
+    const { page, size = 10, ...c } = dto;
+    const qb = this.orderRepository.createQueryBuilder('order');
+    qb.leftJoinAndSelect('order.goods', 'goods').leftJoinAndSelect(
+      'goods.imgs',
+      'imgs',
+    );
+    qb.leftJoinAndSelect('order.address', 'address')
+    qb.leftJoinAndSelect('order.user', 'user');
+    qb.leftJoinAndSelect('order.logistic', 'logistic')
+    const condition = {
+      'goods.name': c.goodsName,
+      'order.state': c.state,
+      'user.name': c.uname,
+      'user.phone': c.phone,
+    };
+    andConditionUtils(qb, condition);
+    return qb
+      .addOrderBy('order.createAt', 'DESC')
+      .skip((page - 1) * size)
+      .take(size)
+      .getManyAndCount();
   }
 
   // 根据订单 ID 查询

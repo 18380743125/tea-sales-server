@@ -5,7 +5,9 @@ export const andConditionUtils = <T>(
   obj: Record<string, unknown>,
 ) => {
   Object.keys(obj).forEach((key) => {
-    qb.andWhere(`${key} = :${key}`, { [key]: obj[key] });
+    if (obj[key]) {
+      qb.andWhere(`${key} = :${key}`, { [key]: obj[key] });
+    }
   });
   return qb;
 };
