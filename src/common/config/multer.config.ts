@@ -43,3 +43,15 @@ export const avatarFileInterceptor = FileInterceptor('avatar', {
   },
   fileFilter: imgFilter,
 });
+
+// 上传评价图片
+export const evaluateFileInterceptor = FilesInterceptor('imgs', 10, {
+  storage: diskStorage({
+    destination: path.join(__dirname, '../../images/evaluate'),
+    filename(_, file, cb) {
+      const filename = `${uuidv4() + path.extname(file.originalname)}`;
+      cb(null, filename);
+    },
+  }),
+  ...goodsFilesInterceptor,
+});

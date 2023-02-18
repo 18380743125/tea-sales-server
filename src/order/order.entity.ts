@@ -14,6 +14,7 @@ import { Goods } from '../goods/goods.entity';
 import { Logistic } from '../logistics/logistic.entity';
 import { Expose } from 'class-transformer';
 import { Address } from '../address/address.entity';
+import { Evaluate } from '../evaluate/evaluate.entity';
 
 @Entity()
 export class Order {
@@ -44,6 +45,11 @@ export class Order {
   @OneToOne(() => Logistic, (logistic) => logistic.order)
   @Expose()
   logistic: Logistic;
+
+  // 评价表
+  @OneToOne(() => Evaluate, (evaluate) => evaluate.order)
+  @Expose()
+  evaluate: Evaluate;
 
   // 关联用户表
   @ManyToOne(() => User, (user) => user.orders, {

@@ -101,7 +101,7 @@ export class GoodsService {
   findOne(id: number) {
     return this.goodsRepository.findOne({
       where: { id },
-      relations: { imgs: true, evaluate: true, category: true },
+      relations: { imgs: true, category: true },
     });
   }
 

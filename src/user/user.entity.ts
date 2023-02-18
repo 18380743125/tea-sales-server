@@ -77,7 +77,7 @@ export class User {
   @Expose()
   orders: Order[];
 
-  @OneToMany(() => Evaluate, (evaluate) => evaluate.evaluate)
+  @OneToMany(() => Evaluate, (evaluate) => evaluate.user)
   @Expose()
   evaluate: Evaluate[];
 

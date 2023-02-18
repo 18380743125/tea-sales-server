@@ -13,10 +13,8 @@ import {
 import { Category } from '../category/category.entity';
 import { Cart } from '../carts/cart.entity';
 import { Discount } from '../discounts/discount.entity';
-import { Evaluate } from '../evaluate/evaluate.entity';
 import { GoodsImg } from './goods-img.entity';
 import { Order } from '../order/order.entity';
-import { Logistic } from '../logistics/logistic.entity';
 import { Expose } from 'class-transformer';
 import { ColumnNumericOptions } from 'typeorm/decorator/options/ColumnNumericOptions';
 
@@ -75,10 +73,6 @@ export class Goods {
   })
   @Expose()
   imgs: GoodsImg[];
-
-  @OneToMany(() => Evaluate, (evaluate) => evaluate.goods)
-  @Expose()
-  evaluate: Evaluate[];
 
   // 关联类别表
   @ManyToOne(() => Category, (category) => category.goods, {

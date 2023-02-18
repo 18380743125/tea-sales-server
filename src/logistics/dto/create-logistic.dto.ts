@@ -9,10 +9,6 @@ export class CreateLogisticDto {
   @IsInt({ message: '用户ID必须是数字~' })
   userId: number;
 
-  @IsNotEmpty({ message: '地址ID不能为空~' })
-  @IsInt({ message: '地址ID必须是数字~' })
-  addressId: number;
-
   @IsNotEmpty({ message: '运输公司不能为空~' })
   @MaxLength(30, { message: '运输公司不能超过30个字符~' })
   @IsString({ message: '运输公司必须是字符串~' })
