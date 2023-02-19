@@ -2,7 +2,6 @@ import * as path from 'path';
 import { Injectable } from '@nestjs/common';
 import { CreateEvaluateDto } from './dto/create-evaluate.dto';
 import { UpdateEvaluateDto } from './dto/update-evaluate.dto';
-import { Goods } from '../goods/goods.entity';
 import { User } from '../user/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Evaluate } from './evaluate.entity';
@@ -12,6 +11,8 @@ import { QueryEvaluateDto } from './dto/query-evaluate.dto';
 import { andConditionUtils } from '../common/utils/db.helper';
 import { removeFile } from '../common/utils/fs.utils';
 import { Order } from 'src/order/order.entity';
+import { PublishCommentDto } from './dto/publish-comment.dto';
+import { EvaluateChat } from './evaluate-chat.entity';
 
 @Injectable()
 export class EvaluateService {
@@ -20,6 +21,8 @@ export class EvaluateService {
     private readonly evaluateRepository: Repository<Evaluate>,
     @InjectRepository(EvaluateImg)
     private readonly evaluateImgRepository: Repository<EvaluateImg>,
+    @InjectRepository(EvaluateChat)
+    private readonly evaluateChatRepository: Repository<EvaluateChat>,
   ) {}
 
   // 添加评论
@@ -102,5 +105,37 @@ export class EvaluateService {
     typeof star !== 'undefined' && (obj.star = star);
     content && (obj.content = content);
     return this.evaluateRepository.update(id, obj);
+  }
+
+  // 评论管理
+  // 发表评论
+  publishComment(user: User, evaluate: Evaluate, dto: PublishCommentDto) {
+    const comment = this.evaluateChatRepository.create({
+      user,
+      evaluate,
+      parentId: dto.parentId,
+      content: dto.content,
+    });
+    return this.evaluateChatRepository.save(comment);
+  }
+
+  // 删除评论
+  removeComment(ids: number[]) {
+    return this.evaluateChatRepository.delete(ids);
+  }
+
+  // 查询评论根据评价 ID
+  async findComments(id: number) {
+    return this.evaluateChatRepository.findAndCount({
+      select: {
+        user: {
+          id: true,
+          name: true,
+        },
+      },
+      order: { createAt: 'desc' },
+      where: { evaluate: { id } },
+      relations: { user: { avatar: true, roles: true } },
+    });
   }
 }

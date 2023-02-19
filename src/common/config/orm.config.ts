@@ -28,7 +28,8 @@ function buildConnectionOptions() {
     entities: entitiesDir,
     // logging: logFlag && isDevelopment,
     logging: ['error'],
-    retryDelay: 30000
+    // logging: false,
+    retryDelay: 30000,
   } as TypeOrmModuleOptions;
 }
 
