@@ -2,14 +2,12 @@ import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Goods } from '../goods/goods.entity';
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
 
 @Entity()
 export class Cart {
@@ -20,6 +18,10 @@ export class Cart {
   @Column({ comment: '数量' })
   @Expose()
   count: number;
+
+  @Column({ default: true, comment: '是否被选中' })
+  @Expose()
+  checked: boolean;
 
   // 关联用户表
   @ManyToOne(() => User, (user) => user.carts, {

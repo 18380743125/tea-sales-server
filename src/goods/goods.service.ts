@@ -83,11 +83,13 @@ export class GoodsService {
   }
 
   // 根据名称、类别 查询商品
-  async findAll(dto: QueryGoodsDto) {
+  async findAll(dto: QueryGoodsDto, id: number) {
     const { page, size = 10, name, category } = dto;
     const qb = this.goodsRepository.createQueryBuilder('goods');
     qb.leftJoinAndSelect('goods.imgs', 'imgs');
     qb.leftJoinAndSelect('goods.category', 'category');
+    qb.leftJoinAndSelect('goods.discount', 'discount');
+    qb.leftJoinAndSelect('goods.carts', 'carts', 'carts.userId = :id', { id });
     category && qb.andWhere('goods.category = :category', { category });
     name && qb.andWhere('goods.name LIKE :name', { name: `%${name}%` });
     return qb

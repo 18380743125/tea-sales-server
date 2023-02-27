@@ -11,6 +11,7 @@ import {
   UseGuards,
   Query,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { GoodsService } from './goods.service';
 import { CreateGoodDto } from './dto/create-good.dto';
@@ -73,9 +74,11 @@ export class GoodsController {
   }
 
   @Get()
+  @UseGuards(JwtGuard)
   // 多条件查询商品(可根据商品类别, 商品名称查询)
-  async findAll(@Query() dto: QueryGoodsDto) {
-    const result = await this.goodsService.findAll(dto);
+  async findAll(@Req() req, @Query() dto: QueryGoodsDto) {
+    const { userId } = req.user
+    const result = await this.goodsService.findAll(dto, userId);
     return new RetUtils(200, 'ok', result);
   }
 

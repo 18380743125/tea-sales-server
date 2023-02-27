@@ -16,15 +16,18 @@ export class DiscountsService {
   // 创建折扣
   create(dto: CreateDiscountDto, goods: Goods) {
     const discount = this.discountRepository.create({ ...dto, goods });
-    // console.log(discount);
     return this.discountRepository.save(discount);
   }
 
   // 查询折扣
-  async findAll(dto: any) {
+  async findAll(dto: any, id: number) {
     const { page, size } = dto;
     const qb = this.discountRepository.createQueryBuilder('discount');
     qb.leftJoinAndSelect('discount.goods', 'goods');
+    qb.leftJoinAndSelect('goods.imgs', 'imgs');
+    qb.leftJoinAndSelect('goods.carts', 'carts', 'carts.userId= :id', {
+      id,
+    });
     qb.skip((page - 1) * size).take(size);
     return qb.getManyAndCount();
   }

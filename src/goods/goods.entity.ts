@@ -83,7 +83,7 @@ export class Goods {
   category: Category;
 
   // 关联购物车表
-  @ManyToMany(() => Cart, (cart) => cart.goods)
+  @OneToMany(() => Cart, (cart) => cart.goods)
   @Expose()
   carts: Cart[];
 

@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   Req,
+  Session,
   UploadedFile,
   UseFilters,
   UseGuards,
@@ -27,9 +28,9 @@ import { JwtGuard } from '../common/guards/jwt.guard';
 import { AuthService } from '../auth/auth.service';
 import { UpdatePwdDto } from './dto/update-pwd.dto';
 import { AdminGuard } from '../common/guards/admin.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { avatarFileInterceptor } from '../common/config/multer.config';
 import { Avatar } from './avatar.entity';
+import { verifyCaptcha } from '../common/config/captcha.util';
 
 @Controller('user')
 @UseFilters(TypeormFilter)
@@ -41,7 +42,9 @@ export class UserController {
 
   @Post()
   // 用户注册
-  async create(@Body() dto: CreateUserDto) {
+  async create(@Session() session, @Body() dto: CreateUserDto) {
+    const errorMsg = verifyCaptcha(session, dto.captcha);
+    if (errorMsg !== 'ok') return new RetUtils(200, errorMsg);
     await this.userService.create(dto);
     return new RetUtils();
   }

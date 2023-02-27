@@ -80,10 +80,22 @@ export class CartsController {
     if (!cart) {
       return new RetUtils(200, ErrorEnum.NO_EXISTS);
     }
-
-    dto.count += cart.count;
+    if (dto.count) dto.count += cart.count;
+    else dto.count = cart.count;
 
     await this.cartsService.update(+id, dto);
+    return new RetUtils();
+  }
+
+  // 全选/全不选
+  @Patch('checkAll/:flag')
+  @UseGuards(JwtGuard)
+  async checkAll(
+    @Req() req,
+    @Param('flag', ParseIntPipe) flag: number,
+  ) {
+    const { userId } = req.user;
+    await this.cartsService.checkAll(+flag, userId);
     return new RetUtils();
   }
 

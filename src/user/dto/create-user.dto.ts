@@ -14,6 +14,10 @@ export class CreateUserDto {
   @Length(6, 32, { message: `密码长度必须在$constraint1到$constraint2位之间` })
   password: string;
 
+  @IsNotEmpty({ message: '验证码不能为空' })
+  @IsString({ message: '验证码必须是字符串' })
+  captcha: string;
+
   @Allow()
   roles?: Role[] | string[];
 }

@@ -17,6 +17,7 @@ import { RetUtils } from '../common/utils/ret.utils';
 import { ConstantEnum } from '../common/enum/constant.enum';
 import { UserService } from '../user/user.service';
 import { Cookie } from 'express-session';
+import { generateCaptcha, verifyCaptcha } from '../common/config/captcha.util';
 
 @Controller('auth')
 export class AuthController {
@@ -29,14 +30,7 @@ export class AuthController {
   @Header('Content-Type', 'image/svg+xml')
   // 生成验证码
   getCaptcha(@Session() session) {
-    const captcha = svgCaptcha.create({
-      color: true,
-      noise: 4,
-    });
-    session.captcha = {
-      text: captcha.text.toLowerCase(),
-      time: Date.now(),
-    };
+    const captcha = generateCaptcha(session);
     return captcha.data;
   }
 
@@ -55,25 +49,8 @@ export class AuthController {
     @Req() req,
     @Res() res,
   ) {
-    const captcha = session.captcha;
-    // 验证码不存在
-    if (!captcha) {
-      res.status(200).json(new RetUtils(200, ErrorEnum.CAPTCHA_ERROR));
-      return;
-    }
-
-    // 验证码是否过期
-    const diff = (Date.now() - captcha.time) / 1000;
-    if (diff > ConstantEnum.CAPTCHA_EXPIRES_TIME) {
-      res.status(200).json(new RetUtils(200, ErrorEnum.CAPTCHA_EXPIRES));
-      return;
-    }
-    // 验证码是否正确
-    if (captcha.text !== dto.captcha.toLowerCase()) {
-      res.status(200).json(new RetUtils(200, ErrorEnum.CAPTCHA_ERROR));
-      return;
-    }
-
+    const errorMsg = verifyCaptcha(session, dto.captcha);
+    if(errorMsg !== 'ok') return res.status(200).json(new RetUtils(200, errorMsg))
     if (dto.flag === ConstantEnum.ADMIN_FLAG) {
       // 校验是否是管理员
       const flag = await this.userService.validateAdmin(dto.name);

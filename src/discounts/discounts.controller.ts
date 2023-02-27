@@ -8,8 +8,8 @@ import {
   Delete,
   UseGuards,
   ParseIntPipe,
-  Query,
-} from '@nestjs/common';
+  Query, Req
+} from "@nestjs/common";
 import { DiscountsService } from './discounts.service';
 import { CreateDiscountDto } from './dto/create-discount.dto';
 import { UpdateDiscountDto } from './dto/update-discount.dto';
@@ -60,13 +60,14 @@ export class DiscountsController {
   }
 
   @Get()
+  @UseGuards(JwtGuard)
   // 查询折扣
-  async findAll(@Query() dto) {
+  async findAll(@Req() req, @Query() dto) {
+    const { userId } = req.user
     if (!dto.size) dto.size = 10;
     dto.page = toNumber(dto.page);
     dto.size = toNumber(dto.size);
-    console.log(dto);
-    const discounts = await this.discountsService.findAll(dto);
+    const discounts = await this.discountsService.findAll(dto, userId);
     return new RetUtils(200, 'ok', discounts);
   }
 
