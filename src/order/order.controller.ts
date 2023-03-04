@@ -24,6 +24,7 @@ import { UserService } from '../user/user.service';
 import { Serialize } from '../common/decorators/serialize.decorator';
 import { AdminGuard } from '../common/guards/admin.guard';
 import { QueryOrderDto } from './dto/query-order.dto';
+import { CartsService } from '../carts/carts.service';
 
 @Controller('order')
 export class OrderController {
@@ -32,6 +33,7 @@ export class OrderController {
     private readonly goodsService: GoodsService,
     private readonly addressService: AddressService,
     private readonly userService: UserService,
+    private readonly cartsService: CartsService,
   ) {}
 
   @Post(':address')
@@ -67,7 +69,9 @@ export class OrderController {
       orders.push(order);
     }
 
-    this.orderService.create(orders);
+    await this.orderService.create(orders);
+    // 清除购物车
+    this.cartsService.removeChecked(user.id);
     return new RetUtils();
   }
 

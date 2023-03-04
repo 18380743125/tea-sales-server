@@ -34,7 +34,7 @@ export class Order {
   @Expose()
   count: number;
 
-  @Column({ length: 1, default: '0', comment: '状态' })
+  @Column({ length: 1, default: '1', comment: '状态' })
   @Expose()
   state: string;
 

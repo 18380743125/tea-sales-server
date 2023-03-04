@@ -13,12 +13,11 @@ export class QueryGoodsDto {
 
   @IsOptional()
   @IsNumberString(null, { message: 'size 必须是数字~' })
-  size;
+  size: number;
 
   @IsOptional()
-  @IsString({ message: '类别名称必须是字符串~' })
-  @MaxLength(20, { message: '类别名称长度不能超过20个字符~' })
-  category: string;
+  @IsNumberString(null, { message: '类别ID必须是数字~' })
+  category: number;
 
   @IsOptional()
   @IsString({ message: '商品名必须是字符串~' })

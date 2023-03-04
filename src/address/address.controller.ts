@@ -35,7 +35,7 @@ export class AddressController {
     const user = await this.userService.findOne(userId);
 
     // 当前新建是默认地址
-    if (typeof dto.default !== 'undefined' && dto.default === '1') {
+    if (typeof dto.isDefault !== 'undefined' && dto.isDefault === '1') {
       await this._changeDefault(userId);
     }
 
@@ -55,7 +55,7 @@ export class AddressController {
     const flag = await this._isCanOperation(+id, userId);
     if (!flag) return new RetUtils(200, ErrorEnum.FORBIDDEN);
 
-    if (typeof dto.default !== 'undefined' && dto.default === '1') {
+    if (typeof dto.isDefault !== 'undefined' && dto.isDefault === '1') {
       await this._changeDefault(userId);
     }
 
@@ -97,7 +97,7 @@ export class AddressController {
   async _changeDefault(userId) {
     const address = await this.addressService.findDefault(userId);
     if (!address) return;
-    address.default = '0';
+    address.isDefault = '0';
     address && (await this.addressService.update(address.id, address));
   }
 

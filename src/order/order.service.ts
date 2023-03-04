@@ -5,28 +5,38 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { QueryOrderDto } from './dto/query-order.dto';
 import { andConditionUtils } from '../common/utils/db.helper';
+import { Goods } from '../goods/goods.entity';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
+    @InjectRepository(Goods)
+    private readonly goodsRepository: Repository<Goods>,
   ) {}
-  create(dto: Order[]) {
+  async create(dto: Order[]) {
     const orders = this.orderRepository.create(dto);
+    for (const item of orders) {
+      const goods = await this.goodsRepository.findOne({
+        where: { id: item.goods.id },
+      });
+      goods.stock -= item.count;
+      await this.goodsRepository.update(goods.id, goods);
+    }
     return this.orderRepository.save(orders);
   }
 
   async findAll(dto: QueryOrderDto) {
-    const { page, size = 10, ...c } = dto;
+    const { page, size = 10000, ...c } = dto;
     const qb = this.orderRepository.createQueryBuilder('order');
     qb.leftJoinAndSelect('order.goods', 'goods').leftJoinAndSelect(
       'goods.imgs',
       'imgs',
     );
-    qb.leftJoinAndSelect('order.address', 'address')
+    qb.leftJoinAndSelect('order.address', 'address');
     qb.leftJoinAndSelect('order.user', 'user');
-    qb.leftJoinAndSelect('order.logistic', 'logistic')
+    qb.leftJoinAndSelect('order.logistic', 'logistic');
     const condition = {
       'goods.name': c.goodsName,
       'order.state': c.state,
@@ -49,7 +59,16 @@ export class OrderService {
     });
   }
 
-  update(id: number, state: string) {
+  async update(id: number, state: string) {
+    if (state === '3') {
+      // 确认收货, 增加销量
+      const order = await this.findOne(id);
+      const goods = await this.goodsRepository.findOne({
+        where: { id: order.goods.id },
+      });
+      goods.saleNums += order.count;
+      await this.goodsRepository.update(goods.id, goods);
+    }
     return this.orderRepository.update(id, { state });
   }
 

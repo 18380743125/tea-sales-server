@@ -81,7 +81,13 @@ export class UserService {
 
   // 更改用户信息
   async update(id: number, dto: UpdateUserDto) {
-    await this.userRepository.update(id, dto as User);
+    const user = await this.userRepository.findOne({ where: { id } })
+    if(dto.account) user.account += dto.account;
+    delete dto.account
+    for(const key of Object.keys(dto)) {
+      user[key] = dto[key]
+    }
+    await this.userRepository.update(id, user);
     return null;
   }
 

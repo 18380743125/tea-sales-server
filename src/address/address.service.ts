@@ -18,7 +18,7 @@ export class AddressService {
   // 新建地址
   create(dto: CreateAddressDto, user: User) {
     // 还没有地址, 默认新建第一个是默认地址
-    if (!this.findDefault(user.id)) dto.default = '1';
+    if (!this.findDefault(user.id)) dto.isDefault = '1';
     const address = this.addressRepository.create({ ...dto, user });
     return this.addressRepository.save(address);
   }
@@ -44,7 +44,7 @@ export class AddressService {
   // 查询用户默认地址
   findDefault(userId: number) {
     return this.addressRepository.findOne({
-      where: { default: '1', user: { id: userId } },
+      where: { isDefault: '1', user: { id: userId } },
     });
   }
 

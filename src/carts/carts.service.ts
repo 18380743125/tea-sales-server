@@ -52,7 +52,7 @@ export class CartsService {
     qb.leftJoinAndSelect('cart.goods', 'goods');
     qb.leftJoinAndSelect('goods.imgs', 'imgs');
     qb.leftJoinAndSelect('goods.discount', 'discount');
-    qb.where('cart.userId = :userId', { userId })
+    qb.where('cart.userId = :userId', { userId });
     return qb
       .skip((page - 1) * size)
       .take(size)
@@ -70,6 +70,14 @@ export class CartsService {
   // 根据 ID 删除购物车
   remove(id: number) {
     return this.cartRepository.delete(id);
+  }
+
+  // 清除用户购物车
+  async removeChecked(userId: number) {
+    const carts = await this.cartRepository.find({
+      where: { user: { id: userId }, checked: true },
+    });
+    return this.cartRepository.remove(carts);
   }
 
   // 全选 / 全不选

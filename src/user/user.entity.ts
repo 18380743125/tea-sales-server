@@ -17,7 +17,7 @@ import { Order } from '../order/order.entity';
 import { Logistic } from '../logistics/logistic.entity';
 import { EvaluateChat } from '../evaluate/evaluate-chat.entity';
 import { Evaluate } from '../evaluate/evaluate.entity';
-import { Exclude, Expose } from "class-transformer";
+import { Exclude, Expose } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -44,6 +44,10 @@ export class User {
   @Column({ nullable: true, length: 20, comment: '联系电话' })
   @Expose()
   phone: string;
+
+  @Expose()
+  @Column({ type: 'double', default: 0, comment: '账户余额' })
+  account: number;
 
   @Column({ length: 1, default: '0', comment: '是否禁用' })
   @Expose()

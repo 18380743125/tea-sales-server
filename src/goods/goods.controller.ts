@@ -77,8 +77,14 @@ export class GoodsController {
   @UseGuards(JwtGuard)
   // 多条件查询商品(可根据商品类别, 商品名称查询)
   async findAll(@Req() req, @Query() dto: QueryGoodsDto) {
-    const { userId } = req.user
-    const result = await this.goodsService.findAll(dto, userId);
+    const { userId } = req.user;
+    const { page, category } = dto
+    let result = null;
+    if (toNumber(category) === 0) {
+      result = await this.goodsService.findTop(page, userId);
+    } else {
+      result = await this.goodsService.findAll(dto, userId);
+    }
     return new RetUtils(200, 'ok', result);
   }
 

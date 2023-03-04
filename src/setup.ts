@@ -33,7 +33,6 @@ export default function (app) {
   });
 
   // 访问静态资源
-  console.log(__dirname, '/images');
   app.useStaticAssets(path.join(__dirname, 'images'));
 
   // 数据库链接对象

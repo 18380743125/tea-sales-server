@@ -1,6 +1,7 @@
 import {
   IsInt,
   IsMobilePhone,
+  IsNumber,
   IsOptional,
   IsString,
   Max,
@@ -26,6 +27,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsString({ message: '手机号必须是字符串~' })
   @IsMobilePhone('zh-CN', null, { message: '手机号格式错误~' })
   phone?: string;
+
+  @IsOptional()
+  @IsNumber()
+  account?: number;
 
   @IsOptional()
   @IsString({ message: '禁用状态必须是字符串~' })

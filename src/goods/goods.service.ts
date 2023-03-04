@@ -90,10 +90,26 @@ export class GoodsService {
     qb.leftJoinAndSelect('goods.category', 'category');
     qb.leftJoinAndSelect('goods.discount', 'discount');
     qb.leftJoinAndSelect('goods.carts', 'carts', 'carts.userId = :id', { id });
-    category && qb.andWhere('goods.category = :category', { category });
+    !!category && qb.andWhere('goods.category = :category', { category });
     name && qb.andWhere('goods.name LIKE :name', { name: `%${name}%` });
     return qb
-      .orderBy('goods.createAt', 'ASC')
+      .addOrderBy('goods.createAt', 'ASC')
+      .addOrderBy('goods.saleNums', 'DESC')
+      .skip((page - 1) * size)
+      .take(size)
+      .getManyAndCount();
+  }
+
+  async findTop(page = 1, userId: number, size = 10) {
+    const qb = this.goodsRepository.createQueryBuilder('goods');
+    qb.leftJoinAndSelect('goods.imgs', 'imgs');
+    qb.leftJoinAndSelect('goods.category', 'category');
+    qb.leftJoinAndSelect('goods.discount', 'discount');
+    qb.leftJoinAndSelect('goods.carts', 'carts', 'carts.userId = :userId', {
+      userId,
+    });
+    return qb
+      .orderBy('goods.saleNums', 'DESC')
       .skip((page - 1) * size)
       .take(size)
       .getManyAndCount();
@@ -101,10 +117,13 @@ export class GoodsService {
 
   // 根据 id 查询商品信息
   findOne(id: number) {
-    return this.goodsRepository.findOne({
-      where: { id },
-      relations: { imgs: true, category: true },
-    });
+    const qb = this.goodsRepository.createQueryBuilder('goods');
+    qb.leftJoinAndSelect('goods.imgs', 'imgs');
+    qb.leftJoinAndSelect('goods.category', 'category');
+    qb.leftJoinAndSelect('goods.discount', 'discount');
+    qb.leftJoinAndSelect('goods.carts', 'carts');
+    qb.where('goods.id = :id', { id });
+    return qb.getOne();
   }
 
   // 根据 id 删除商品

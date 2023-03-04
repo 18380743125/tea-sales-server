@@ -18,17 +18,21 @@ export class Address {
   @Expose()
   id: number;
 
-  @Column({ length: 128, comment: '收货地区' })
+  @Column({ length: 100, comment: '收货人姓名' })
   @Expose()
-  region: string;
+  name: string;
 
-  @Column({ length: 160, comment: '详细地址' })
+  @Column({ length: 160, comment: '收货人手机号' })
   @Expose()
-  detail: string;
+  tel: string;
+
+  @Column({ length: 255, comment: '详细地址' })
+  @Expose()
+  address: string;
 
   @Column({ length: 1, default: '0', comment: '默认地址' })
   @Expose()
-  default: string;
+  isDefault: string;
 
   @OneToMany(() => Order, (order) => order.address)
   @Expose()
