@@ -28,6 +28,8 @@ export class DiscountsService {
     qb.leftJoinAndSelect('goods.carts', 'carts', 'carts.userId= :id', {
       id,
     });
+    qb.leftJoinAndSelect('goods.orders', 'orders');
+    qb.leftJoinAndSelect('orders.evaluate', 'evaluate');
     qb.skip((page - 1) * size).take(size);
     return qb.getManyAndCount();
   }

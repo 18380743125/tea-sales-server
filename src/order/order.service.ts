@@ -37,6 +37,7 @@ export class OrderService {
     qb.leftJoinAndSelect('order.address', 'address');
     qb.leftJoinAndSelect('order.user', 'user');
     qb.leftJoinAndSelect('order.logistic', 'logistic');
+    qb.leftJoinAndSelect('order.evaluate', 'evaluate');
     const condition = {
       'goods.name': c.goodsName,
       'order.state': c.state,

@@ -24,6 +24,8 @@ import { ErrorEnum } from '../common/enum/error.enum';
 import { QueryGoodsDto } from './dto/query-goods.dto';
 import { goodsFilesInterceptor } from '../common/config/multer.config';
 import { toNumber } from '../common/utils/format';
+import { Serialize } from "../common/decorators/serialize.decorator";
+import { Goods } from "./goods.entity";
 
 @Controller('goods')
 export class GoodsController {
@@ -89,6 +91,7 @@ export class GoodsController {
   }
 
   @Get(':id')
+  @Serialize(Goods)
   // 根据 id 查询商品信息
   async findOne(@Param('id') id: string) {
     const result = await this.goodsService.findOne(+id);

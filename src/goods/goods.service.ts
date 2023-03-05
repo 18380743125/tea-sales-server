@@ -90,6 +90,8 @@ export class GoodsService {
     qb.leftJoinAndSelect('goods.category', 'category');
     qb.leftJoinAndSelect('goods.discount', 'discount');
     qb.leftJoinAndSelect('goods.carts', 'carts', 'carts.userId = :id', { id });
+    qb.leftJoinAndSelect('goods.orders', 'orders');
+    qb.leftJoinAndSelect('orders.evaluate', 'evaluate');
     !!category && qb.andWhere('goods.category = :category', { category });
     name && qb.andWhere('goods.name LIKE :name', { name: `%${name}%` });
     return qb
@@ -108,6 +110,9 @@ export class GoodsService {
     qb.leftJoinAndSelect('goods.carts', 'carts', 'carts.userId = :userId', {
       userId,
     });
+    qb.leftJoinAndSelect('goods.orders', 'orders');
+    qb.leftJoinAndSelect('orders.evaluate', 'evaluate');
+
     return qb
       .orderBy('goods.saleNums', 'DESC')
       .skip((page - 1) * size)
@@ -122,6 +127,14 @@ export class GoodsService {
     qb.leftJoinAndSelect('goods.category', 'category');
     qb.leftJoinAndSelect('goods.discount', 'discount');
     qb.leftJoinAndSelect('goods.carts', 'carts');
+    qb.leftJoinAndSelect('goods.orders', 'orders');
+    qb.leftJoinAndSelect('orders.evaluate', 'evaluate');
+    qb.leftJoinAndSelect('evaluate.user', 'euser');
+    qb.leftJoinAndSelect('euser.avatar', 'avatar');
+    qb.leftJoinAndSelect('evaluate.imgs', 'img');
+    qb.leftJoinAndSelect('evaluate.chats', 'chats');
+    qb.leftJoinAndSelect('chats.user', 'user');
+    qb.leftJoinAndSelect('user.roles', 'roles');
     qb.where('goods.id = :id', { id });
     return qb.getOne();
   }
