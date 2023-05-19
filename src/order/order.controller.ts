@@ -79,8 +79,19 @@ export class OrderController {
   @UseGuards(JwtGuard)
   @Serialize(Order)
   // 多条件查询订单信息, 订单状态、商品名称、用户名、手机号 查询
-  async findAll(@Query() dto: QueryOrderDto) {
+  async findAll(@Req() req, @Query() dto: QueryOrderDto) {
+    const user = await this.userService.findOne(+req.user.userId);
+    let flag = false;
+    if (user) {
+      flag = !user.roles.filter((item) => item.name === '管理员').length;
+    }
     const orders = await this.orderService.findAll(dto);
+    if (flag) {
+      console.log(65);
+      orders[0] = orders[0].filter(
+        (item: Order) => item?.user?.id === req.user.userId,
+      );
+    }
     return new RetUtils(200, 'ok', orders);
   }
 
