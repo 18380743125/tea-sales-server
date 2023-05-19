@@ -41,6 +41,7 @@ export class LogisticsController {
     if (!order || order.state !== '1' || logistic) {
       return new RetUtils(200, ErrorEnum.FORBIDDEN);
     }
+    await this.orderService.update(order.id, '2');
 
     await this.logisticsService.create(order, user, dto.way);
     return new RetUtils();

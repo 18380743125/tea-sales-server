@@ -44,6 +44,7 @@ export class OrderService {
       'user.name': c.uname,
       'user.phone': c.phone,
     };
+    console.log(condition);
     andConditionUtils(qb, condition);
     return qb
       .addOrderBy('order.createAt', 'DESC')
